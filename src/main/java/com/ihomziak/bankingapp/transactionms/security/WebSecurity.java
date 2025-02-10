@@ -37,8 +37,8 @@ public class WebSecurity {
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/actuator/**").permitAll()
 
-                        .requestMatchers(HttpMethod.GET, "/api/transaction/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/transaction/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/transaction/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/transaction/**").authenticated()
                 )
                 .addFilter(new AuthorizationFilter(authenticationManager, environment))
                 .authenticationManager(authenticationManager)
