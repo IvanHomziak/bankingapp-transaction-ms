@@ -3,6 +3,7 @@ package com.ihomziak.bankingapp.transactionms.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -34,7 +35,10 @@ public class WebSecurity {
         http
                 .csrf((csrf) -> csrf.disable())
                 .authorizeHttpRequests((auth) -> auth
-                        .anyRequest().authenticated()
+                        .requestMatchers("/actuator/**").permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/api/transaction/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/transaction/**").permitAll()
                 )
                 .addFilter(new AuthorizationFilter(authenticationManager, environment))
                 .authenticationManager(authenticationManager)
