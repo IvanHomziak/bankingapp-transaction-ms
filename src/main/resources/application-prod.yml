@@ -1,0 +1,116 @@
+spring:
+  application:
+    name: transaction-ms
+  config:
+    import: optional:configserver:http://localhost:8888
+  devtools:
+    restart:
+      enabled: true
+
+  # Redis Server Configuration
+  data:
+    redis:
+      password: redispassword
+      sentinel:
+        master: mymaster
+        nodes: 127.0.0.1:26379,127.0.0.1:26380,127.0.0.1:26381
+      lettuce:
+        shutdown-timeout: 200ms
+      # host: redis-master
+      # timeout: 10000
+      # port: 6379
+
+  # Datasource connection
+  sql:
+    init:
+      platform: mysql
+      mode: always
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DB_HOST:mysql-tms-c:3306}/transactiondatabase?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true
+    username: ${DB_USER:root}
+    password: ${DB_PASS:admin1234}
+
+  # Hibernate
+  data:
+    rest:
+      base-path: /api
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        temp:
+          use_jdbc_metadata_defaults: false
+    show-sql: true
+
+  # Kafka Configuration
+  kafka:
+    producer:
+      bootstrap-servers: broker:9092
+      key-serializer: org.apache.kafka.common.serialization.IntegerSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      # value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      bootstrap-servers: broker:9092
+      group-id: transaction-group
+      auto-offset-reset: earliest
+      properties:
+        spring.json.trusted.packages: "*"
+    topic:
+      transfer-transactions-topic: transfer-transactions-topic
+      transaction-results-topic: transaction-results-topic
+
+  # RabbitMQ
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+# Server Configuration
+server:
+  port: ${PORT:8085}
+
+# Eureka Configuration
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8010/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${server.port}}
+
+# Logging Configuration
+logging:
+  level:
+    org:
+      springframework: ERROR
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
+    com:
+      numericaideas: DEBUG
+  file:
+    name: transaction-ms.log
+
+# Management Endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+# Authentication Configuration
+authorization:
+  token:
+    header:
+      name: Authorization
+      prefix: Bearer
+token:
+  secret: dgjorufhrsnjdu438fkdj38fdmcv7dm3ckvhrsnjjuwelueivhe848fhedldh5ndk
