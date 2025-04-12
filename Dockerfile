@@ -1,8 +1,10 @@
 # Build stage
-FROM openjdk:18-jdk-alpine
+FROM eclipse-temurin:18-jdk
 
-# Install required dependencies
-RUN apk --no-cache add git curl maven
+# Install required dependencies for build
+RUN apt-get update && \
+    apt-get install -y git curl maven && \
+    apt-get clean
 
 # Set environment variables for the main project
 ENV DB_HOST=${DB_HOST}
@@ -19,7 +21,7 @@ WORKDIR /app
 # Clone and build bankingapp-common
 RUN git clone https://github.com/IvanHomziak/bankingapp-common.git && \
     cd bankingapp-common && \
-    mvn clean install -DskipTests
+    mvn clean install -DskipTests=true
 
 # Go back to /app directory
 WORKDIR /app
