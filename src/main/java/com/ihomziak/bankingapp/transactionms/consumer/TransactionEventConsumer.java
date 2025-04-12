@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,7 +20,8 @@ public class TransactionEventConsumer {
         this.transactionServiceImpl = transactionServiceImpl;
     }
 
-    @KafkaListener(topics = {"${spring.kafka.topic.transaction-results-topic}"})
+    @Async("transactionEventExecutor")
+    @KafkaListener(topics = {"${spring.kafka.topic.transaction-results-topic}"}, errorHandler = "kafkaListenerErrorHandler")
     public void onMessage(ConsumerRecord<Integer, String> consumerRecord) throws JsonProcessingException {
         log.info("Received ConsumerRecord: {}", consumerRecord.value());
         this.transactionServiceImpl.processTransactionEventResponse(consumerRecord);

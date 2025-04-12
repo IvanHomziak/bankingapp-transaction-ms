@@ -4,8 +4,7 @@ import com.ihomziak.bankingapp.common.utils.TransactionStatus;
 import lombok.*;
 
 @Builder
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class TransactionRequestDTO {

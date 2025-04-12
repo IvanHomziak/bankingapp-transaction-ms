@@ -17,7 +17,9 @@ import com.ihomziak.bankingapp.transactionms.utils.TransactionStatusChecker;
 import com.ihomziak.bankingapp.transactionms.entity.Transaction;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,12 +79,19 @@ public class TransactionServiceImpl implements TransactionService {
         log.info("Processing consumer record: {}", consumerRecord.value());
 
         TransactionEventResponseDTO responseMessage = deserializeConsumerRecord(consumerRecord);
-        Transaction transaction = fetchTransactionFromDatabase(responseMessage.getTransactionUuid());
-
-        updateTransactionStatus(transaction, responseMessage.getTransactionStatus());
+        String transactionUuid = responseMessage.getTransactionUuid();
+        MDC.put("transactionUuid", transactionUuid);
+        try {
+            log.info("Processing consumer record: {}", consumerRecord.value());
+            Transaction transaction = fetchTransactionFromDatabase(transactionUuid);
+            updateTransactionStatus(transaction, responseMessage.getTransactionStatus());
+        } finally {
+            MDC.remove("transactionUuid");
+        }
     }
 
     @Override
+    @Cacheable(value = "transactionStatus", key = "#uuid")
     @Transactional(readOnly = true)
     public Transaction fetchTransaction(String uuid) {
         return this.transactionRepository.findTransactionByTransactionUuid(uuid)

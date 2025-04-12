@@ -4,11 +4,9 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Builder
 public class TransactionStatusResponseDTO {
     private String transactionUuid;

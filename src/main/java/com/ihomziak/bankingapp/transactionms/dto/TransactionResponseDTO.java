@@ -3,11 +3,9 @@ package com.ihomziak.bankingapp.transactionms.dto;
 import com.ihomziak.bankingapp.common.utils.TransactionStatus;
 import lombok.*;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Builder
 public class TransactionResponseDTO {
     private String transactionUuid;

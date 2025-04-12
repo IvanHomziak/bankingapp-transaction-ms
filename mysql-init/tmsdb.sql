@@ -5,7 +5,7 @@ CREATE DATABASE IF NOT EXISTS transactiondatabase;
 USE transactiondatabase;
 
 -- Create the `transaction` table
-CREATE TABLE IF NOT EXISTS transaction (
+CREATE TABLE IF NOT EXISTS transactions (
                                            transaction_id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,     -- Primary key for transaction
                                            transaction_uuid VARCHAR(255) NOT NULL,                   -- UUID of the transaction
                                            sender_uuid VARCHAR(255) NOT NULL,                        -- UUID of the sender
@@ -17,8 +17,11 @@ CREATE TABLE IF NOT EXISTS transaction (
 );
 
 -- Example insert statements (optional) for testing purposes
-INSERT INTO transaction (transaction_uuid, sender_uuid, receiver_uuid, amount, transaction_status)
+INSERT INTO transactions (transaction_uuid, sender_uuid, receiver_uuid, amount, transaction_status)
 VALUES ('123e4567-e89b-12d3-a456-426614174001', '123e4567-e89b-12d3-a456-23423423', '3840ade4-f8ad-4829-a7af-b88192d52243', 100.00, 'NEW');
 
-INSERT INTO transaction (transaction_uuid, sender_uuid, receiver_uuid, amount, transaction_status)
+INSERT INTO transactions (transaction_uuid, sender_uuid, receiver_uuid, amount, transaction_status)
 VALUES ('123e4567-e89b-12d3-a456-426614174000', '123e4567-e89b-12d3-a456-42661417qweqwe', '3840ade4-f8ad-4829-a7af-b88192d52243', 50.00, 'COMPLETED');
+
+CREATE INDEX idx_transaction_uuid ON transactions(transaction_uuid);
+CREATE INDEX idx_transaction_status ON transactions(transaction_status);
