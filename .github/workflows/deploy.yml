@@ -71,5 +71,5 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ${{ secrets.DOCKER_HUB_USERNAME }}/bankingapp-users-ms:${{ env.IMAGE_TAG }}
-            ${{ secrets.DOCKER_HUB_USERNAME }}/bankingapp-users-ms:latest
+            ${{ secrets.DOCKER_HUB_USERNAME }}/bankingapp-transaction-ms:${{ env.IMAGE_TAG }}
+            ${{ secrets.DOCKER_HUB_USERNAME }}/bankingapp-transaction-ms:latest
