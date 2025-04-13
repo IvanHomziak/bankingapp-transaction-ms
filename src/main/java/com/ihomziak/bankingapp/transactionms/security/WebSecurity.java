@@ -1,5 +1,7 @@
 package com.ihomziak.bankingapp.transactionms.security;
 
+import static com.ihomziak.bankingapp.transactionms.utils.constants.Endpoints.*;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -37,8 +39,8 @@ public class WebSecurity {
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/actuator/**").permitAll()
 
-                        .requestMatchers(HttpMethod.GET, "/api/transaction/**").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/api/transaction/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, GET_TRANSACTION).authenticated()
+                        .requestMatchers(HttpMethod.POST, API_PREFIX).authenticated()
                 )
                 .addFilter(new AuthorizationFilter(authenticationManager, environment))
                 .authenticationManager(authenticationManager)
