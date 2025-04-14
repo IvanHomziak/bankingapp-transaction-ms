@@ -1,12 +1,4 @@
 spring:
-  application:
-    name: transaction-ms
-  config:
-    import: optional:configserver:http://localhost:8888
-  devtools:
-    restart:
-      enabled: true
-
   # Datasource connection
   sql:
     init:
@@ -17,12 +9,8 @@ spring:
     url: jdbc:mysql://${DB_HOST:mysql-tms-c:3306}/transactiondatabase?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true
     username: ${DB_USER:root}
     password: ${DB_PASS:admin1234}
-
   # Hibernate
   data:
-    rest:
-      base-path: /api
-
     # Redis Server Configuration
     redis:
       password: redispassword
@@ -68,10 +56,6 @@ spring:
     port: 5672
     username: guest
     password: guest
-
-# Server Configuration
-server:
-  port: ${PORT:8085}
 
 # Eureka Configuration
 eureka:

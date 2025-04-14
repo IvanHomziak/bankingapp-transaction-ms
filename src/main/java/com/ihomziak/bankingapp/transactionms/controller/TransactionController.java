@@ -1,6 +1,6 @@
 package com.ihomziak.bankingapp.transactionms.controller;
 
-import static com.ihomziak.bankingapp.transactionms.utils.constants.Endpoints.API_PREFIX;
+import static com.ihomziak.bankingapp.transactionms.utils.constants.Endpoints.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ihomziak.bankingapp.transactionms.dto.TransactionRequestDTO;
@@ -28,12 +28,12 @@ public class TransactionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.transactionService.createTransaction(transactionDTO));
     }
 
-    @GetMapping("/{uuid}")
+    @GetMapping(UUID_PREF)
     public ResponseEntity<Transaction> getTransaction(@PathVariable String uuid) {
         return ResponseEntity.status(HttpStatus.OK).body(this.transactionService.fetchTransaction(uuid));
     }
 
-    @GetMapping("/cancel/{uuid}")
+    @GetMapping(CANSEL_TRANSACTION)
     public ResponseEntity<String>  canselTransaction(@PathVariable String uuid) {
         this.transactionService.cancelTransaction(uuid);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body("Transaction CANCELED");
