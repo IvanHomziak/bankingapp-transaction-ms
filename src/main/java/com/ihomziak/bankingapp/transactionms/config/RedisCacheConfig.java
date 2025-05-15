@@ -1,10 +1,15 @@
 package com.ihomziak.bankingapp.transactionms.config;
 
+import java.time.Duration;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisPassword;
 import org.springframework.data.redis.connection.RedisSentinelConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
@@ -18,12 +23,12 @@ import io.lettuce.core.ReadFrom;
 
 @Slf4j
 @Configuration
-public class RedisConfig {
+public class RedisCacheConfig {
 
     private final RedisProperties redisProperties;
 
     @Autowired
-    public RedisConfig(RedisProperties redisProperties) {
+    public RedisCacheConfig(RedisProperties redisProperties) {
         this.redisProperties = redisProperties;
     }
 
@@ -51,5 +56,15 @@ public class RedisConfig {
         redisTemplate.setValueSerializer(new StringRedisSerializer());
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         return redisTemplate;
+    }
+
+    @Bean
+    public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
+        RedisCacheConfiguration defaultConfig = RedisCacheConfiguration.defaultCacheConfig()
+            .entryTtl(Duration.ofMinutes(10)); // TTL 10 хвилин
+
+        return RedisCacheManager.builder(connectionFactory)
+            .cacheDefaults(defaultConfig)
+            .build();
     }
 }

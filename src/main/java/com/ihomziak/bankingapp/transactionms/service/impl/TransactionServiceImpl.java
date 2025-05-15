@@ -3,6 +3,7 @@ package com.ihomziak.bankingapp.transactionms.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ihomziak.bankingapp.common.utils.TransactionStatus;
+import com.ihomziak.bankingapp.transactionms.dao.CacheRepository;
 import com.ihomziak.bankingapp.transactionms.dao.TransactionRepository;
 import com.ihomziak.bankingapp.transactionms.dto.TransactionEventRequestDTO;
 import com.ihomziak.bankingapp.transactionms.dto.TransactionEventResponseDTO;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -32,17 +34,19 @@ import java.util.UUID;
 public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository transactionRepository;
+    private final CacheRepository cacheRepository;
     private final TransactionEventsProducer transactionEventsProducer;
     private final ObjectMapper objectMapper;
     private final MapStructureMapperImpl structureMapper;
 
     @Autowired
-    public TransactionServiceImpl(TransactionRepository transactionRepository,
+    public TransactionServiceImpl(TransactionRepository transactionRepository, final CacheRepository cacheRepository,
                                   TransactionEventsProducer transactionEventsProducer,
                                   ObjectMapper objectMapper,
                                   MapStructureMapperImpl structureMapper) {
         this.transactionRepository = transactionRepository;
-        this.transactionEventsProducer = transactionEventsProducer;
+		this.cacheRepository = cacheRepository;
+		this.transactionEventsProducer = transactionEventsProducer;
         this.objectMapper = objectMapper;
         this.structureMapper = structureMapper;
     }
@@ -93,8 +97,9 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Cacheable(value = "transactionStatus", key = "#uuid")
     @Transactional(readOnly = true)
-    public Transaction fetchTransaction(String uuid) {
-        return this.transactionRepository.findTransactionByTransactionUuid(uuid)
+    public Transaction findTransactionByUuid(String uuid) {
+        Optional<Transaction> transactionOptional = Optional.of(this.cacheRepository.findTransactionByTransactionUuid(uuid));
+        return transactionOptional
                 .orElseThrow(() -> new TransactionNotFoundException("Transaction with UUID " + uuid + " not found in Redis cache"));
     }
 

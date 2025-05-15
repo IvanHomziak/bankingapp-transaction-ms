@@ -15,7 +15,7 @@ public interface TransactionService {
 
     TransactionStatusResponseDTO createTransaction(TransactionRequestDTO transactionDTO) throws JsonProcessingException;
 
-    Transaction fetchTransaction(String id);
+    Transaction findTransactionByUuid(String id);
 
     void cancelTransaction(String id);
 

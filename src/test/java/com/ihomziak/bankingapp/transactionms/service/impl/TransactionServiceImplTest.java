@@ -109,10 +109,10 @@ class TransactionServiceImplTest {
     }
 
     @Test
-    void fetchTransaction_Success() {
+    void findTransaction_ByUuid_Success() {
         when(cacheRepository.findTransactionByTransactionUuid("transaction-uuid")).thenReturn(transaction);
 
-        Transaction result = transactionService.fetchTransaction("transaction-uuid");
+        Transaction result = transactionService.findTransactionByUuid("transaction-uuid");
 
         assertNotNull(result);
         assertEquals(transaction.getTransactionUuid(), result.getTransactionUuid());
@@ -120,10 +120,10 @@ class TransactionServiceImplTest {
     }
 
     @Test
-    void fetchTransaction_NotFound() {
+    void findTransaction_ByUuid_NotFound() {
         when(cacheRepository.findTransactionByTransactionUuid("transaction-uuid")).thenReturn(null);
 
-        assertThrows(TransactionNotFoundException.class, () -> transactionService.fetchTransaction("transaction-uuid"));
+        assertThrows(TransactionNotFoundException.class, () -> transactionService.findTransactionByUuid("transaction-uuid"));
         verify(cacheRepository, times(1)).findTransactionByTransactionUuid("transaction-uuid");
     }
 

@@ -13,6 +13,7 @@ spring:
   data:
     # Redis Server Configuration
     redis:
+      host: redis-master
       password: redispassword
       sentinel:
         master: mymaster
